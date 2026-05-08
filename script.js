@@ -60,3 +60,23 @@ let lineas = [
     {x0: 300, y0: 50, x1: 50, y1: 300},   // diagonal
     {x0: 150, y0: -50, x1: 150, y1: 300}  // vertical
 ];
+// codigos binarios
+const INSIDE = 0;
+const LEFT = 1;
+const RIGHT = 2;
+const BOTTOM = 4;
+const TOP = 8;
+
+// calcula region del punto
+function getCode(x, y, xmin, ymin, xmax, ymax) {
+
+    let code = INSIDE;
+
+    if (x < xmin) code |= LEFT;
+    else if (x > xmax) code |= RIGHT;
+
+    if (y < ymin) code |= BOTTOM;
+    else if (y > ymax) code |= TOP;
+
+    return code;
+}
