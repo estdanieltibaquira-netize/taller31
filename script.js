@@ -88,6 +88,16 @@ function cohenSutherland(x0, y0, x1, y1, xmin, ymin, xmax, ymax) {
         drawLine(x0, y0, x1, y1);
     }
 }
+// ventana
+let xmin = 100, ymin = 100, xmax = 300, ymax = 250;
+
+// dibuja viewport
+drawViewport(xmin, ymin, xmax, ymax);
+
+// dibuja lineas recortadas
+for (let l of lineas) {
+    cohenSutherland(l.x0, l.y0, l.x1, l.y1, xmin, ymin, xmax, ymax);
+}
 // viewport
 function drawViewport(xmin, ymin, xmax, ymax) {
     drawLine(xmin, ymin, xmax, ymin);
