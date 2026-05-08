@@ -98,6 +98,35 @@ drawViewport(xmin, ymin, xmax, ymax);
 for (let l of lineas) {
     cohenSutherland(l.x0, l.y0, l.x1, l.y1, xmin, ymin, xmax, ymax);
 }
+let index = 0;
+
+// limpia canvas
+function clear() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+// dibuja escena actual
+function render() {
+    clear();
+
+    drawViewport(xmin, ymin, xmax, ymax);
+
+    let l = lineas[index];
+    cohenSutherland(l.x0, l.y0, l.x1, l.y1, xmin, ymin, xmax, ymax);
+}
+
+function next() {
+    index = (index + 1) % lineas.length;
+    render();
+}
+
+function prev() {
+    index = (index - 1 + lineas.length) % lineas.length;
+    render();
+}
+
+// primera escena
+render();
 // viewport
 function drawViewport(xmin, ymin, xmax, ymax) {
     drawLine(xmin, ymin, xmax, ymin);
