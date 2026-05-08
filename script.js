@@ -52,3 +52,11 @@ function drawViewport(xmin, ymin, xmax, ymax) {
     drawLine(xmax, ymax, xmin, ymax);
     drawLine(xmin, ymax, xmin, ymin);
 }
+// lineas de prueba (5 casos)
+let lineas = [
+    {x0: 100, y0: 100, x1: 200, y1: 200}, // dentro
+    {x0: -50, y0: -50, x1: -10, y1: -10}, // fuera
+    {x0: 50, y0: 50, x1: 300, y1: 300},   // cruza
+    {x0: 300, y0: 50, x1: 50, y1: 300},   // diagonal
+    {x0: 150, y0: -50, x1: 150, y1: 300}  // vertical
+];
