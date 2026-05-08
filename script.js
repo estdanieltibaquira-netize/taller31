@@ -1,12 +1,14 @@
+// obtiene canvas
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-// sistema de coordenadas
+// cambia origen a abajo izquierda
 ctx.translate(0, canvas.height);
 ctx.scale(1, -1);
 
-// dibuja linea (Bresenham)
+// dibuja linea pixel a pixel (Bresenham)
 function drawLine(x0, y0, x1, y1) {
+
     let dx = Math.abs(x1 - x0);
     let dy = Math.abs(y1 - y0);
 
@@ -16,7 +18,7 @@ function drawLine(x0, y0, x1, y1) {
     let err = dx - dy;
 
     while (true) {
-        ctx.fillRect(x0, y0, 1, 1);
+        ctx.fillRect(x0, y0, 1, 1); // dibuja pixel
 
         if (x0 === x1 && y0 === y1) break;
 
@@ -33,11 +35,54 @@ function drawLine(x0, y0, x1, y1) {
         }
     }
 }
-// recorta linea
-function cohenSutherland(x0, y0, x1, y1, xmin, ymin, xmax, ymax) {
 
-    let code0 = getCode(x0, y0, xmin, ymin, xmax, ymax);
-    let code1 = getCode(x1, y1, xmin, ymin, xmax, ymax);
+// dibuja ventana de recorte
+function drawViewport(xmin, ymin, xmax, ymax) {
+
+    drawLine(xmin, ymin, xmax, ymin);
+    drawLine(xmax, ymin, xmax, ymax);
+    drawLine(xmax, ymax, xmin, ymax);
+    drawLine(xmin, ymax, xmin, ymin);
+}
+
+// lineas de prueba
+let lineas = [
+    {x0: 120, y0: 120, x1: 250, y1: 200}, // dentro
+    {x0: 50, y0: 50, x1: 80, y1: 80},     // fuera
+    {x0: 50, y0: 150, x1: 350, y1: 150},  // horizontal
+    {x0: 200, y0: 50, x1: 200, y1: 350},  // vertical
+    {x0: 50, y0: 50, x1: 350, y1: 300}    // diagonal
+];
+
+// ventana de recorte
+let xmin = 100, ymin = 100, xmax = 300, ymax = 250;
+
+// codigos de region
+const INSIDE = 0;
+const LEFT = 1;
+const RIGHT = 2;
+const BOTTOM = 4;
+const TOP = 8;
+
+// calcula codigo de un punto
+function getCode(x, y) {
+
+    let code = INSIDE;
+
+    if (x < xmin) code |= LEFT;
+    else if (x > xmax) code |= RIGHT;
+
+    if (y < ymin) code |= BOTTOM;
+    else if (y > ymax) code |= TOP;
+
+    return code;
+}
+
+// algoritmo Cohen-Sutherland
+function cohenSutherland(x0, y0, x1, y1) {
+
+    let code0 = getCode(x0, y0);
+    let code1 = getCode(x1, y1);
 
     let accept = false;
 
@@ -75,11 +120,11 @@ function cohenSutherland(x0, y0, x1, y1, xmin, ymin, xmax, ymax) {
             if (codeOut === code0) {
                 x0 = x;
                 y0 = y;
-                code0 = getCode(x0, y0, xmin, ymin, xmax, ymax);
+                code0 = getCode(x0, y0);
             } else {
                 x1 = x;
                 y1 = y;
-                code1 = getCode(x1, y1, xmin, ymin, xmax, ymax);
+                code1 = getCode(x1, y1);
             }
         }
     }
@@ -88,70 +133,65 @@ function cohenSutherland(x0, y0, x1, y1, xmin, ymin, xmax, ymax) {
         drawLine(x0, y0, x1, y1);
     }
 }
-// ventana
-let xmin = 100, ymin = 100, xmax = 300, ymax = 250;
 
-// dibuja viewport
-drawViewport(xmin, ymin, xmax, ymax);
-
-// dibuja lineas recortadas
-for (let l of lineas) {
-    cohenSutherland(l.x0, l.y0, l.x1, l.y1, xmin, ymin, xmax, ymax);
+// limpia canvas correctamente
+function clear() {
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.restore();
 }
+
+// indice de escena
 let index = 0;
 
-// limpia canvas
-function clear() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-}
-
-// dibuja escena actual
+// dibuja escena
 function render() {
+
     clear();
 
+    // viewport
+    ctx.fillStyle = "blue";
     drawViewport(xmin, ymin, xmax, ymax);
 
     let l = lineas[index];
-    cohenSutherland(l.x0, l.y0, l.x1, l.y1, xmin, ymin, xmax, ymax);
+
+    // linea original
+    ctx.fillStyle = "gray";
+    drawLine(l.x0, l.y0, l.x1, l.y1);
+
+    // linea recortada
+    ctx.fillStyle = "red";
+    cohenSutherland(l.x0, l.y0, l.x1, l.y1);
 }
 
+// siguiente linea
 function next() {
     index = (index + 1) % lineas.length;
     render();
 }
 
+// linea anterior
 function prev() {
     index = (index - 1 + lineas.length) % lineas.length;
     render();
 }
 
-// primera escena
+// primera ejecución
 render();
-// viewport
-function drawViewport(xmin, ymin, xmax, ymax) {
-    drawLine(xmin, ymin, xmax, ymin);
-    drawLine(xmax, ymin, xmax, ymax);
-    drawLine(xmax, ymax, xmin, ymax);
-    drawLine(xmin, ymax, xmin, ymin);
-}
+// actualiza viewport desde inputs
+function update() {
 
-// datos
-let lineas = [
-    {x0: 100, y0: 100, x1: 200, y1: 200},
-    {x0: -50, y0: -50, x1: -10, y1: -10},
-    {x0: 50, y0: 50, x1: 300, y1: 300},
-    {x0: 300, y0: 50, x1: 50, y1: 300},
-    {x0: 150, y0: -50, x1: 150, y1: 300}
-];
+    let nxmin = parseInt(document.getElementById("xmin").value);
+    let nymin = parseInt(document.getElementById("ymin").value);
+    let nxmax = parseInt(document.getElementById("xmax").value);
+    let nymax = parseInt(document.getElementById("ymax").value);
 
-// ventana
-let xmin = 100, ymin = 100, xmax = 300, ymax = 250;
+    // evita NaN
+    if (!isNaN(nxmin)) xmin = nxmin;
+    if (!isNaN(nymin)) ymin = nymin;
+    if (!isNaN(nxmax)) xmax = nxmax;
+    if (!isNaN(nymax)) ymax = nymax;
 
-// dibujar
-ctx.fillStyle = "blue";
-drawViewport(xmin, ymin, xmax, ymax);
-
-ctx.fillStyle = "red";
-for (let l of lineas) {
-    cohenSutherland(l.x0, l.y0, l.x1, l.y1, xmin, ymin, xmax, ymax);
+    render(); // redibuja
 }

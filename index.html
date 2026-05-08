@@ -6,12 +6,24 @@
 </head>
 <body>
 
-    <h2>Cohen-Sutherland</h2>
+<h2>Cohen-Sutherland</h2>
 
-    <canvas id="canvas" width="600" height="400" style="border:1px solid black;"></canvas>
+<canvas id="canvas" width="600" height="400" style="border:1px solid black;"></canvas>
 
-    <script src="script.js"></script>
+<!-- botones de navegación -->
+<div style="margin-top:10px;">
     <button onclick="prev()">Anterior</button>
-<button onclick="next()">Siguiente</button>
+    <button onclick="next()">Siguiente</button>
+    <div style="margin-top:10px;">
+    <input id="xmin" placeholder="xmin">
+    <input id="ymin" placeholder="ymin">
+    <input id="xmax" placeholder="xmax">
+    <input id="ymax" placeholder="ymax">
+    <button onclick="update()">Actualizar</button>
+</div>
+</div>
+
+<script src="script.js"></script>
+
 </body>
 </html>
