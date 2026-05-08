@@ -44,3 +44,11 @@ function drawLine(x0, y0, x1, y1) {
         }
     }
 }
+// dibuja rectangulo de recorte
+function drawViewport(xmin, ymin, xmax, ymax) {
+
+    drawLine(xmin, ymin, xmax, ymin);
+    drawLine(xmax, ymin, xmax, ymax);
+    drawLine(xmax, ymax, xmin, ymax);
+    drawLine(xmin, ymax, xmin, ymin);
+}
