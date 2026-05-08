@@ -3,24 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <title>Taller 3-1</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+            background: #f5f5f5;
+        }
+
+        h2 {
+            margin-top: 20px;
+        }
+
+        canvas {
+            border: 2px solid black;
+            background: white;
+            margin-top: 15px;
+        }
+
+        .controls {
+            margin-top: 15px;
+        }
+
+        input {
+            width: 60px;
+            padding: 5px;
+            margin: 3px;
+            text-align: center;
+        }
+
+        button {
+            padding: 8px 15px;
+            margin: 5px;
+            border: none;
+            background: #3498db;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        .nav {
+            margin-top: 10px;
+        }
+    </style>
 </head>
+
 <body>
 
-<h2>Cohen-Sutherland</h2>
+<h2>Recorte de Líneas - Cohen-Sutherland</h2>
 
-<canvas id="canvas" width="600" height="400" style="border:1px solid black;"></canvas>
+<canvas id="canvas" width="600" height="400"></canvas>
 
-<!-- botones de navegación -->
-<div style="margin-top:10px;">
-    <button onclick="prev()">Anterior</button>
-    <button onclick="next()">Siguiente</button>
-    <div style="margin-top:10px;">
-    <input id="xmin" placeholder="xmin">
-    <input id="ymin" placeholder="ymin">
-    <input id="xmax" placeholder="xmax">
-    <input id="ymax" placeholder="ymax">
-    <button onclick="update()">Actualizar</button>
+<!-- navegación -->
+<div class="nav">
+    <button onclick="prev()">⬅ Anterior</button>
+    <button onclick="next()">Siguiente ➡</button>
 </div>
+
+<!-- inputs -->
+<div class="controls">
+    <br>
+    <label>xmin</label>
+    <input id="xmin" placeholder="100">
+
+    <label>ymin</label>
+    <input id="ymin" placeholder="100">
+
+    <label>xmax</label>
+    <input id="xmax" placeholder="300">
+
+    <label>ymax</label>
+    <input id="ymax" placeholder="250">
+
+    <br>
+    <button onclick="update()">Actualizar ventana</button>
 </div>
 
 <script src="script.js"></script>

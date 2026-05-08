@@ -150,17 +150,17 @@ function render() {
 
     clear();
 
-    // viewport
+    // viewport (azul)
     ctx.fillStyle = "blue";
     drawViewport(xmin, ymin, xmax, ymax);
 
     let l = lineas[index];
 
-    // linea original
-    ctx.fillStyle = "gray";
+    // linea original (gris claro)
+    ctx.fillStyle = "#999";
     drawLine(l.x0, l.y0, l.x1, l.y1);
 
-    // linea recortada
+    // linea recortada (rojo fuerte)
     ctx.fillStyle = "red";
     cohenSutherland(l.x0, l.y0, l.x1, l.y1);
 }
